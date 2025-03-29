@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace UIToolkit
@@ -141,8 +140,9 @@ namespace UIToolkit
             _powerLabel.text = "3";
         }
 
-        public void Initialize(Parameter parameter, Sprite heartIcon, Sprite manaIcon, Sprite powerIcon)
+        public void UpdateStatuBoxElments(Entity entity)
         {
+            var parameter = entity.Parameter;
             _parameter = parameter;
             _playerIcon.style.backgroundImage = parameter.IconSprite.texture;
             _nameLabel.text = parameter.Name;

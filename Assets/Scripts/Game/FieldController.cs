@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using UIToolkit;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class FieldController : MonoBehaviour
 {
@@ -13,8 +15,18 @@ public class FieldController : MonoBehaviour
     [SerializeField]
     private BattleController _battleController;
 
+    private List<StatusBoxComponent> _statusBoxComponents = new();
+
     private async UniTask Start()
     {
+        var root = GetComponent<UIDocument>().rootVisualElement;
+        var topStatusBoxComponents = root.Q<VisualElement>("TopElements").Children();
+        var bottomStatusBoxComponents = root.Q<VisualElement>("BottomElements").Children();
+
+        _statusBoxComponents.AddRange((IEnumerable<StatusBoxComponent>)topStatusBoxComponents);
+        _statusBoxComponents.AddRange((IEnumerable<StatusBoxComponent>)bottomStatusBoxComponents);
+
+        // ï¿½Gï¿½ï¿½ï¿½Jï¿½Eï¿½ï¿½ï¿½gï¿½Ìƒ`ï¿½Fï¿½bï¿½Nï¿½ï¿½ï¿½sï¿½ï¿½
         while (true)
         {
             await UniTask.Delay(1000);
@@ -47,7 +59,7 @@ public class FieldController : MonoBehaviour
                 {
                     _stateController.ChangeState(State.Battle);
 
-                    // ƒvƒŒƒCƒ„[‚Æ“G‚ªí‚¤ê‡‚ÍƒvƒŒƒCƒ„[‚ð¶‘¤‚É‚·‚é
+                    // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Æ“Gï¿½ï¿½ï¿½í‚¤ï¿½ê‡ï¿½Íƒvï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
                     if (entityLeft.EntityType != EntityType.Player && entityRight.EntityType == EntityType.Player)
                     {
                         _battleController.StartBattle(entityRight, entityLeft);
@@ -56,6 +68,23 @@ public class FieldController : MonoBehaviour
                     return;
                 }
             }
+        }
+    }
+
+    public void DisplayStatusBoxes()
+    {
+        _statusBoxComponents.ForEach(statusBox => statusBox.style.display = DisplayStyle.None);
+        for (int i = 0; i < _playerController.PlayerList.Count; i++)
+        {
+            _statusBoxComponents[i].style.display = DisplayStyle.Flex;
+        }
+    }
+
+    public void UpdateStatusBoxes()
+    {
+        for (int i = 0; i < _playerController.PlayerList.Count; i++)
+        {
+            _statusBoxComponents[i].UpdateStatuBoxElments(_playerController.PlayerList[i]);
         }
     }
 }
